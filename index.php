@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Little Surprise</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Poppins:wght@300;400;500;600&family=Caveat:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --blush-1:#fdeaf0;
+    --blush-2:#fbf3ea;
+    --card:#fffcf9;
+    --wine:#7a2e3b;
+    --rose:#c9788c;
+    --gold:#c9a66b;
+    --ink:#4a3037;
+  }
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+
+  html,body{
+    height:100%;
+    font-family:'Poppins', sans-serif;
+    color:var(--ink);
+    background:linear-gradient(160deg, var(--blush-1) 0%, var(--blush-2) 60%, #f6e9df 100%);
+    overflow-x:hidden;
+  }
+
+  body{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    padding:24px;
+  }
+
+  .field{
+    position:fixed; inset:0; pointer-events:none; z-index:0;
+    overflow:hidden;
+  }
+  .petal{
+    position:absolute;
+    top:-40px;
+    font-size:18px;
+    opacity:.55;
+    animation:fall linear infinite;
+    color:var(--rose);
+  }
+  @keyframes fall{
+    to{ transform:translateY(115vh) rotate(220deg); }
+  }
+
+  .stage{
+    position:relative;
+    z-index:1;
+    width:100%;
+    max-width:440px;
+  }
+
+  .card{
+    background:var(--card);
+    border-radius:22px;
+    padding:44px 34px 38px;
+    box-shadow:0 30px 60px -25px rgba(122,46,59,.35), 0 2px 0 rgba(255,255,255,.6) inset;
+    text-align:center;
+    position:relative;
+    animation:rise .7s cubic-bezier(.2,.8,.25,1);
+  }
+  @keyframes rise{
+    from{ opacity:0; transform:translateY(24px) scale(.98); }
+    to{ opacity:1; transform:translateY(0) scale(1); }
+  }
+
+  .eyebrow{
+    font-size:12.5px;
+    letter-spacing:.06em;
+    color:var(--rose);
+    margin-bottom:6px;
+  }
+
+  h1{
+    font-family:'Cormorant Garamond', serif;
+    font-weight:600;
+    font-size:38px;
+    line-height:1.15;
+    color:var(--wine);
+  }
+
+  h1 em{
+    font-style:italic;
+    font-weight:500;
+    color:var(--rose);
+  }
+
+  p.sub{
+    margin-top:10px;
+    font-size:14.5px;
+    color:#8a6b73;
+    line-height:1.5;
+  }
+
+  .field-group{
+    margin-top:28px;
+    text-align:left;
+  }
+  label{
+    display:block;
+    font-size:12px;
+    color:#a1808a;
+    margin-bottom:6px;
+    letter-spacing:.02em;
+  }
+  input{
+    width:100%;
+    padding:13px 16px;
+    border-radius:12px;
+    border:1.5px solid #f0dbe1;
+    background:#fffaf7;
+    font-family:'Poppins', sans-serif;
+    font-size:15px;
+    color:var(--ink);
+    outline:none;
+    transition:border-color .2s ease, box-shadow .2s ease;
+  }
+  input:focus{
+    border-color:var(--rose);
+    box-shadow:0 0 0 4px rgba(201,120,140,.14);
+  }
+  .field-group + .field-group{ margin-top:16px; }
+
+  .btn{
+    margin-top:26px;
+    width:100%;
+    padding:14px 16px;
+    border:none;
+    border-radius:12px;
+    background:linear-gradient(135deg, var(--wine), #9c4257);
+    color:#fff6f2;
+    font-family:'Poppins', sans-serif;
+    font-size:15px;
+    font-weight:500;
+    letter-spacing:.02em;
+    cursor:pointer;
+    box-shadow:0 14px 26px -12px rgba(122,46,59,.55);
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .btn:hover{ transform:translateY(-2px); box-shadow:0 18px 30px -12px rgba(122,46,59,.6); }
+  .btn:active{ transform:translateY(0); }
+
+  .error{
+    margin-top:14px;
+    font-size:13px;
+    color:#b3455a;
+    display:none;
+  }
+  .shake{ animation:shake .4s; }
+  @keyframes shake{
+    20%,60%{ transform:translateX(-8px); }
+    40%,80%{ transform:translateX(8px); }
+  }
+
+  .screen{ display:none; }
+  .screen.active{ display:block; }
+
+  .cake-wrap{
+    position:relative;
+    height:120px;
+    display:flex;
+    align-items:flex-end;
+    justify-content:center;
+    margin-bottom:8px;
+  }
+  .balloon{
+    position:absolute;
+    font-size:34px;
+    animation:bob 3.4s ease-in-out infinite;
+  }
+  .balloon.b1{ left:18%; top:-6px; animation-delay:0s; }
+  .balloon.b2{ right:16%; top:8px; animation-delay:.6s; }
+  @keyframes bob{
+    0%,100%{ transform:translateY(0) rotate(-2deg); }
+    50%{ transform:translateY(-10px) rotate(2deg); }
+  }
+  .cake{ font-size:52px; }
+
+  .message-block{
+    text-align:left;
+    margin-top:22px;
+    font-size:14.5px;
+    line-height:1.75;
+    color:#5c4048;
+  }
+  .message-block p{ margin-bottom:14px; }
+  .signoff{
+    margin-top:6px;
+    font-size:13.5px;
+    color:#a1808a;
+    text-align:right;
+    font-style:italic;
+  }
+
+  .gallery{
+    margin-top:24px;
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+    max-height:640px;
+    overflow-y:auto;
+    padding-right:6px;
+    scroll-behavior:smooth;
+  }
+  .gallery::-webkit-scrollbar{ width:6px; }
+  .gallery::-webkit-scrollbar-thumb{ background:#e9c9d1; border-radius:10px; }
+  .gallery::-webkit-scrollbar-track{ background:transparent; }
+  .polaroid{
+    background:#fff;
+    padding:10px 10px 26px;
+    border-radius:6px;
+    box-shadow:0 16px 30px -14px rgba(122,46,59,.35);
+    transform:rotate(var(--r,0deg));
+    transition:transform .25s ease;
+  }
+  .polaroid:nth-child(1){ --r:-2.5deg; }
+  .polaroid:nth-child(2){ --r:2deg; }
+  .polaroid:nth-child(3){ --r:-1.5deg; }
+  .polaroid:nth-child(4){ --r:1.8deg; }
+  .polaroid:nth-child(5){ --r:-2deg; }
+  .polaroid:nth-child(6){ --r:1.2deg; }
+  .polaroid:nth-child(7){ --r:-1deg; }
+  .polaroid:nth-child(8){ --r:2.2deg; }
+  .polaroid:hover{ transform:rotate(0deg) scale(1.02); }
+  .polaroid img{
+    width:100%;
+    height:290px;
+    object-fit:cover;
+    border-radius:2px;
+    display:block;
+    background:linear-gradient(135deg,#f3d9df,#efe3d3);
+  }
+  .polaroid figcaption{
+    text-align:center;
+    font-family:'Cormorant Garamond', serif;
+    font-style:italic;
+    font-size:15px;
+    color:var(--rose);
+    margin-top:10px;
+  }
+
+  .dots{
+    display:flex;
+    justify-content:center;
+    gap:7px;
+    margin-top:24px;
+  }
+  .dot{
+    width:6px; height:6px; border-radius:50%;
+    background:#e9c9d1;
+  }
+  .dot.on{ background:var(--wine); }
+
+  .ghost-btn{
+    margin-top:22px;
+    background:none;
+    border:1.5px solid var(--rose);
+    color:var(--wine);
+    padding:12px 16px;
+    border-radius:12px;
+    font-family:'Poppins', sans-serif;
+    font-size:14px;
+    cursor:pointer;
+    width:100%;
+    transition:background .2s ease;
+  }
+  .ghost-btn:hover{ background:#fbeaf0; }
+
+  .board{
+    position:relative;
+    margin-top:24px;
+    height:460px;
+    border-radius:16px;
+    background:
+      linear-gradient(#fffaf7,#fffaf7);
+    overflow:hidden;
+  }
+  .pin{
+    position:absolute;
+    background:#fff;
+    padding:7px 7px 22px;
+    border-radius:5px;
+    box-shadow:0 12px 22px -10px rgba(122,46,59,.35);
+  }
+  .pin img{
+    display:block;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    border-radius:2px;
+    background:linear-gradient(135deg,#f3d9df,#efe3d3);
+  }
+  .pin .cap{
+    position:absolute;
+    bottom:2px;
+    left:0; right:0;
+    text-align:center;
+    font-family:'Caveat', cursive;
+    font-size:18px;
+    color:var(--wine);
+  }
+  .pin .heart{
+    position:absolute;
+    top:-8px;
+    right:-6px;
+    font-size:16px;
+  }
+  .deco{
+    position:absolute;
+    font-size:16px;
+    opacity:.7;
+  }
+
+  .collage-head{
+    text-align:left;
+    margin-top:22px;
+  }
+  .collage-head .eyebrow{ text-align:left; }
+  .collage-head h2{
+    font-family:'Poppins', sans-serif;
+    font-weight:600;
+    font-size:26px;
+    color:var(--ink);
+    line-height:1.2;
+  }
+  .collage-head h2 span{ color:var(--gold); }
+  .collage-head p{
+    margin-top:8px;
+    font-size:13px;
+    color:#8a6b73;
+    line-height:1.6;
+    max-width:280px;
+  }
+  .collage-board{
+    position:relative;
+    margin-top:22px;
+    height:300px;
+  }
+  .cthumb{
+    position:absolute;
+    width:52px;
+    height:52px;
+    border-radius:6px;
+    overflow:hidden;
+    box-shadow:0 8px 16px -8px rgba(122,46,59,.4);
+    border:2px solid #fff;
+  }
+  .cthumb img{
+    width:100%; height:100%;
+    object-fit:cover;
+    filter:grayscale(1) contrast(1.05);
+    background:linear-gradient(135deg,#f3d9df,#efe3d3);
+  }
+
+  .sparkle{ display:inline-block; }
+
+  @media (max-width:480px){
+    .card{ padding:34px 22px 30px; }
+    h1{ font-size:32px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="field" id="field"></div>
+
+<div class="stage">
+
+  <!-- LOGIN SCREEN -->
+  <div class="screen active" id="screen-login">
+    <div class="card">
+      <p class="eyebrow">a little something for you</p>
+      <h1>You've got a <em>surprise</em> waiting</h1>
+      <p class="sub">Enter your name and the secret code to unlock it.</p>
+
+      <div class="field-group">
+        <label for="nickname">Your nickname</label>
+        <input type="text" id="nickname" placeholder="Type your nickname" autocomplete="off">
+      </div>
+      <div class="field-group">
+        <label for="password">Secret code</label>
+        <input type="password" id="password" placeholder="••••" autocomplete="off">
+      </div>
+
+      <button class="btn" onclick="tryLogin()">Unlock it 🎁</button>
+      <p class="error" id="loginError">That doesn't look right — try again.</p>
+    </div>
+  </div>
+
+  <!-- INTRO / MESSAGE SCREEN -->
+  <div class="screen" id="screen-intro">
+    <div class="card">
+      <div class="cake-wrap">
+        <span class="balloon b1">🎈</span>
+        <span class="balloon b2">🎈</span>
+        <span class="cake">🎂</span>
+      </div>
+      <p class="eyebrow">happy birthday</p>
+      <h1>Happy Birthday, <em id="nameSlot">Mauu</em></h1>
+
+      <div class="message-block">
+        <p>Some people come into life as friends, but slowly they become a very special feeling.</p>
+        <p>You're one of those rare people who make ordinary days feel beautiful. ✨</p>
+        <p>I don't know how to say it perfectly, but your smile, your talks, and your presence mean a lot to me.</p>
+        <p>Always stay happy, always keep smiling. 💗</p>
+      </div>
+      <p class="signoff">— Yash_01</p>
+
+      <button class="btn" onclick="goTo('scrapbook')">Explore more ✨</button>
+    </div>
+  </div>
+
+  <!-- SCRAPBOOK SCREEN -->
+  <div class="screen" id="screen-scrapbook">
+    <div class="card">
+      <p class="eyebrow">a page from us</p>
+      <h1>Little <em>notes</em> about you</h1>
+
+      <div class="board">
+        <span class="deco" style="top:6px; left:46%;">🌸</span>
+        <span class="deco" style="top:150px; left:2%;">🦋</span>
+        <span class="deco" style="top:270px; left:80%;">🦋</span>
+        <span class="deco" style="top:340px; left:8%;">✨</span>
+
+        <div class="pin" style="left:0%; top:0px; width:100px; height:128px; transform:rotate(-8deg);">
+          <img src="14.jpeg" alt="">
+          <span class="heart">💗</span>
+          <span class="cap">Cutie 😘</span>
+        </div>
+        <div class="pin" style="left:34%; top:6px; width:108px; height:138px; transform:rotate(6deg);">
+          <img src="3.jpeg" alt="">
+          <span class="heart">💗</span>
+          <span class="cap">Baddie 😎</span>
+        </div>
+        <div class="pin" style="left:67%; top:34px; width:96px; height:120px; transform:rotate(-5deg);">
+          <img src="15.jpeg" alt="">
+          <span class="heart">💗</span>
+          <span class="cap">Quirky 🌼</span>
+        </div>
+        <div class="pin" style="left:2%; top:172px; width:110px; height:132px; transform:rotate(5deg);">
+          <img src="1.jpeg" alt="">
+          <span class="heart">💗</span>
+          <span class="cap">My Love</span>
+        </div>
+        <div class="pin" style="left:37%; top:200px; width:96px; height:118px; transform:rotate(-6deg);">
+          <img src="5.jpeg" alt="">
+          <span class="heart">💗</span>
+          <span class="cap">Dream Girl 🌙</span>
+        </div>
+        <div class="pin" style="left:67%; top:182px; width:100px; height:126px; transform:rotate(4deg);">
+          <img src="9.jpeg" alt="">
+          <span class="heart">💗</span>
+          <span class="cap">Sunshine ☀️</span>
+        </div>
+        <div class="pin" style="left:28%; top:326px; width:112px; height:130px; transform:rotate(-4deg);">
+          <img src="7.jpeg" alt="">
+          <span class="heart">💗</span>
+          <span class="cap">Beautiful 🌸</span>
+        </div>
+      </div>
+
+      <button class="btn" onclick="goTo('collage')">Keep going ✨</button>
+    </div>
+  </div>
+
+  <!-- COLLAGE SCREEN -->
+  <div class="screen" id="screen-collage">
+    <div class="card">
+      <div class="collage-head">
+        <p class="eyebrow">for the birthday girl</p>
+        <h2>Happy Birthday <span id="nameSlot3">Mauu</span></h2>
+        <p>Wishing you a day filled with love, laughter, and all the happiness your heart can hold — and a year full of moments just as unforgettable as these.</p>
+      </div>
+
+      <div class="collage-board">
+        <div class="cthumb" style="left:0%; top:230px;"><img src="1.jpeg" alt=""></div>
+        <div class="cthumb" style="left:9%; top:205px;"><img src="2.jpeg" alt=""></div>
+        <div class="cthumb" style="left:18%; top:175px;"><img src="3.jpeg" alt=""></div>
+        <div class="cthumb" style="left:27%; top:142px;"><img src="4.jpeg" alt=""></div>
+        <div class="cthumb" style="left:36%; top:112px;"><img src="5.jpeg" alt=""></div>
+        <div class="cthumb" style="left:45%; top:88px;"><img src="6.jpeg" alt=""></div>
+        <div class="cthumb" style="left:54%; top:74px;"><img src="7.jpeg" alt=""></div>
+        <div class="cthumb" style="left:63%; top:96px;"><img src="8.jpeg" alt=""></div>
+        <div class="cthumb" style="left:72%; top:130px;"><img src="11.jpeg" alt=""></div>
+        <div class="cthumb" style="left:81%; top:165px;"><img src="12.jpeg" alt=""></div>
+      </div>
+
+      <button class="btn" onclick="goTo('gallery')">See full gallery 📸</button>
+    </div>
+  </div>
+
+  <!-- GALLERY SCREEN -->
+  <div class="screen" id="screen-gallery">
+    <div class="card">
+      <p class="eyebrow">a few moments</p>
+      <h1>Memories worth <em>keeping</em></h1>
+
+      <div class="gallery">
+        <figure class="polaroid">
+          <img src="2.jpeg" alt="Memory one">
+          <figcaption>this one, always ✨</figcaption>
+        </figure>
+        <figure class="polaroid">
+          <img src="12.jpeg" alt="Memory two">
+          <figcaption>my favourite smile</figcaption>
+        </figure>
+        <figure class="polaroid">
+          <img src="13.jpeg" alt="Memory three">
+          <figcaption>golden days</figcaption>
+        </figure>
+        <figure class="polaroid">
+          <img src="14.jpeg" alt="Memory four">
+          <figcaption>that laugh though</figcaption>
+        </figure>
+        <figure class="polaroid">
+          <img src="9.jpeg" alt="Memory five">
+          <figcaption>lost in the moment</figcaption>
+        </figure>
+        <figure class="polaroid">
+          <img src="16.jpeg" alt="Memory six">
+          <figcaption>picture perfect</figcaption>
+        </figure>
+        <figure class="polaroid">
+          <img src="7.jpeg" alt="Memory seven">
+          <figcaption>simply you</figcaption>
+        </figure>
+        <figure class="polaroid">
+          <img src="3.jpeg" alt="Memory eight">
+          <figcaption>keep this one forever</figcaption>
+        </figure>
+      </div>
+
+      <button class="btn" onclick="goTo('final')">One last thing 💌</button>
+    </div>
+  </div>
+
+  <!-- FINAL SCREEN -->
+  <div class="screen" id="screen-final">
+    <div class="card">
+      <p class="eyebrow">from me to you</p>
+      <h1>Wishing you the <em>world</em>, <span id="nameSlot2">Mauu</span></h1>
+      <div class="message-block">
+        <p>On your birthday, I only wish your life stays full of love, success, peace, and beautiful memories.</p>
+      </div>
+      <p class="signoff">Happy Birthday 🎉 — Yash_01</p>
+
+      <div class="dots">
+        <span class="dot"></span><span class="dot on"></span><span class="dot"></span>
+      </div>
+
+      <button class="ghost-btn" onclick="goTo('intro')">Replay the magic <span class="sparkle">✨</span></button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const NICKNAME = "Mauu";
+  const PASSWORD = "1111";
+
+  function tryLogin(){
+    const n = document.getElementById('nickname').value.trim();
+    const p = document.getElementById('password').value.trim();
+    const err = document.getElementById('loginError');
+    const card = document.querySelector('#screen-login .card');
+
+    if(n.toLowerCase() === NICKNAME.toLowerCase() && p === PASSWORD){
+      err.style.display = 'none';
+      goTo('intro');
+    } else {
+      err.style.display = 'block';
+      card.classList.remove('shake');
+      void card.offsetWidth;
+      card.classList.add('shake');
+    }
+  }
+
+  document.getElementById('password').addEventListener('keydown', e=>{
+    if(e.key === 'Enter') tryLogin();
+  });
+
+  function goTo(name){
+    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+    document.getElementById('screen-' + name).classList.add('active');
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  const field = document.getElementById('field');
+  const symbols = ['💗','🌸','✨','💕'];
+  for(let i=0;i<16;i++){
+    const s = document.createElement('span');
+    s.className = 'petal';
+    s.textContent = symbols[Math.floor(Math.random()*symbols.length)];
+    s.style.left = Math.random()*100 + 'vw';
+    s.style.fontSize = (14 + Math.random()*12) + 'px';
+    s.style.animationDuration = (9 + Math.random()*8) + 's';
+    s.style.animationDelay = (Math.random()*10) + 's';
+    field.appendChild(s);
+  }
+</script>
+
+</body>
+</html>
